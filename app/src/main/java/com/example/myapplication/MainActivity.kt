@@ -1,196 +1,149 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.component.CommonDialog
-import com.example.myapplication.ui.component.FakeBottomDialog
-import com.example.myapplication.ui.component.FakeCommonDialog
-import com.example.myapplication.ui.component.MyBottomDialog
+import com.example.myapplication.ui.component.WorkaroundDialog
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun HomeContent(
-    modifier: Modifier = Modifier,
-    showNativeDialog: () -> Unit,
-) {
+fun HomeContent(modifier: Modifier = Modifier) {
+    var showSimpleDialog by remember { mutableStateOf(false) }
+    var showListDialog by remember { mutableStateOf(false) }
+    var showInputDialog by remember { mutableStateOf(false) }
+    var showListInputDialog by remember { mutableStateOf(false) }
 
-    var showCommonDialog by remember { mutableStateOf(false) }
-    if (showCommonDialog) {
-        CommonDialog(title = "CommonDialog",
-            onDismissRequest = { showCommonDialog = false }
-        ) {
-            Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-        }
-    }
-
-    var showCommonInputDialog by remember { mutableStateOf(false) }
-    if (showCommonInputDialog) {
-        CommonDialog(
-            title = "CommonInputDialog",
-            onDismissRequest = { showCommonInputDialog = false }
-        ) {
-            var value by remember { mutableStateOf("") }
-            Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-            TextField(
-                value = value,
-                onValueChange = { value = it },
-                modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
-        }
-    }
-
-    var showBottomDialog by remember { mutableStateOf(false) }
-    if (showBottomDialog) {
-        MyBottomDialog(
-            title = "BottomDialog",
-            onDismissRequest = { showBottomDialog = false },
-        ) {
-            Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-        }
-    }
-
-    var showBottomInputDialog by remember { mutableStateOf(false) }
-    if (showBottomInputDialog) {
-        MyBottomDialog(
-            title = "BottomDialog",
-            onDismissRequest = { showBottomInputDialog = false },
-        ) {
-            var value by remember { mutableStateOf("") }
-            Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-            TextField(
-                value = value,
-                onValueChange = { value = it },
-                modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
-        }
-    }
-
-    Box {
-        var showFakeCommonDialog by remember { mutableStateOf(false) }
-        var showFakeCommonInputDialog by remember { mutableStateOf(false) }
-        var showFakeBottomDialog by remember { mutableStateOf(false) }
-        var showFakeBottomInputDialog by remember { mutableStateOf(false) }
-
-        Column(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(onClick = showNativeDialog, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Native Dialog")
-            }
-            Button(onClick = { showCommonDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Common Dialog")
-            }
-            Button(onClick = { showFakeCommonDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Fake Common Dialog")
-            }
-            Button(onClick = { showCommonInputDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Common Input Dialog")
-            }
-            Button(
-                onClick = { showFakeCommonInputDialog = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Fake Common Input Dialog")
-            }
-            Button(onClick = { showBottomDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Bottom Dialog")
-            }
-            Button(onClick = { showFakeBottomDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Fake Bottom Dialog")
-            }
-            Button(onClick = { showBottomInputDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Bottom Input Dialog")
-            }
-            Button(onClick = { showFakeBottomInputDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Fake Bottom Input Dialog")
-            }
-            Button(onClick = { showFakeCommonDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Fake Bottom Input Dialog")
-            }
-        }
-
-        if (showFakeCommonDialog) {
-            FakeCommonDialog(title = "FakeCommonDialog",
-                onDismissRequest = { showFakeCommonDialog = false }
-            ) {
-                Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-            }
-        }
-
-        if (showFakeCommonInputDialog) {
-            FakeCommonDialog(
-                title = "CommonInputDialog",
-                onDismissRequest = { showFakeCommonInputDialog = false }
-            ) {
-                var value by remember { mutableStateOf("") }
-                Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-                TextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
+    if (showSimpleDialog) {
+        WorkaroundDialog(onDismissRequest = { showSimpleDialog = false }) {
+            Surface(shape = shapes.extraLarge) {
+                Text(
+                    text = "Simple Dialog",
+                    style = typography.displaySmall,
+                    modifier = Modifier.padding(32.dp)
                 )
             }
         }
+    }
 
-        if (showFakeBottomDialog) {
-            FakeBottomDialog(
-                title = "BottomDialog",
-                onDismissRequest = { showFakeBottomDialog = false },
-            ) {
-                Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
+    if (showListDialog) {
+        WorkaroundDialog(onDismissRequest = { showListDialog = false }) {
+            Surface(shape = shapes.extraLarge) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(100) { index ->
+                        Text(text = "Item ${index + 1}")
+                    }
+                }
             }
         }
+    }
 
-        if (showFakeBottomInputDialog) {
-            FakeBottomDialog(
-                title = "BottomDialog",
-                onDismissRequest = { showFakeBottomInputDialog = false },
-            ) {
-                var value by remember { mutableStateOf("") }
-                Text(text = "Hello\n".repeat(5), modifier = Modifier.padding(16.dp))
-                TextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    modifier
-                        .padding(16.dp)
+    if (showInputDialog) {
+        WorkaroundDialog(onDismissRequest = { showInputDialog = false }) {
+            Surface(shape = shapes.extraLarge) {
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                )
+                        .padding(24.dp)
+                ) {
+                    var value by remember { mutableStateOf("") }
+                    OutlinedTextField(
+                        value = value,
+                        onValueChange = { value = it },
+                        modifier = Modifier.weight(1f, false)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SimpleButton(text = "Confirm", modifier = Modifier.align(Alignment.End)) {
+                        showInputDialog = false
+                    }
+                }
             }
         }
+    }
+
+    if (showListInputDialog) {
+        WorkaroundDialog(onDismissRequest = { showListInputDialog = false }) {
+            Surface(shape = shapes.extraLarge) {
+                Column {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(100) { index ->
+                            Text(text = "Item ${index + 1}")
+                        }
+                    }
+                    var value by remember { mutableStateOf("") }
+                    OutlinedTextField(
+                        value = value,
+                        onValueChange = { value = it },
+                        maxLines = 5,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Divider()
+                    SimpleButton(
+                        text = "Confirm",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        showListInputDialog = false
+                    }
+                }
+            }
+        }
+    }
+
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        SimpleButton(text = "Show simple dialog") { showSimpleDialog = true }
+        SimpleButton(text = "Show list dialog") { showListDialog = true }
+        SimpleButton(text = "Show input dialog") { showInputDialog = true }
+        SimpleButton(text = "Show list input dialog") { showListInputDialog = true }
+    }
+}
+
+@Composable
+private fun SimpleButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = modifier) {
+        Text(text)
     }
 }
 
@@ -203,32 +156,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold {
                     HomeContent(
                         modifier = Modifier.padding(it),
-                        showNativeDialog = this::showNativeDialog,
                     )
                 }
             }
         }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun showNativeDialog() {
-        val linearLayout = LinearLayout(this)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        val text = TextView(this)
-        text.text = "Hello\n".repeat(5)
-        val textField = EditText(this)
-        linearLayout.addView(text)
-        linearLayout.addView(textField)
-
-        AlertDialog.Builder(this)
-            .setTitle("NativeDialog")
-            .setView(linearLayout)
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Confirm", null)
-            .show()
     }
 }
