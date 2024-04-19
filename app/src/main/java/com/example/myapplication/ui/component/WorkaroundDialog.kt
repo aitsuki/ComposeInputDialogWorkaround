@@ -12,24 +12,21 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun WorkaroundDialog(
-    dismissOnBackPress: Boolean = true,
-    dismissOnClickOutside: Boolean = true,
-    usePlatformWidth: Boolean = true,
     onDismissRequest: () -> Unit,
+    properties: DialogProperties = DialogProperties(),
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
     val dialog = remember {
         WorkaroundDialogWrapper(
             context = context,
-            usePlatformWidth = usePlatformWidth,
-            dismissOnBackPress = dismissOnBackPress,
-            dismissOnClickOutside = dismissOnClickOutside,
+            properties = properties,
             onDismissRequest = onDismissRequest,
-            content = content
+            content = content,
         )
     }
 
@@ -43,16 +40,15 @@ fun WorkaroundDialog(
 
 private class WorkaroundDialogWrapper(
     context: Context,
-    val usePlatformWidth: Boolean,
-    val dismissOnBackPress: Boolean,
-    val dismissOnClickOutside: Boolean,
     val onDismissRequest: () -> Unit,
+    val properties: DialogProperties,
     content: @Composable () -> Unit,
 ) : ComponentDialog(context) {
 
     init {
         val window = window ?: error("Dialog has no window")
         window.requestFeature(Window.FEATURE_NO_TITLE)
+        @Suppress("DEPRECATION")
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         window.setBackgroundDrawableResource(android.R.color.transparent)
 
@@ -66,7 +62,7 @@ private class WorkaroundDialogWrapper(
             setContent(content)
             setContentView(this)
         }
-        if (usePlatformWidth) {
+        if (properties.usePlatformDefaultWidth) {
             window.setLayout(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
@@ -78,7 +74,7 @@ private class WorkaroundDialogWrapper(
             )
         }
         onBackPressedDispatcher.addCallback(this) {
-            if (dismissOnBackPress) {
+            if (properties.dismissOnBackPress) {
                 onDismissRequest()
             }
         }
@@ -86,7 +82,7 @@ private class WorkaroundDialogWrapper(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val result = super.onTouchEvent(event)
-        if (result && dismissOnClickOutside) {
+        if (result && properties.dismissOnClickOutside) {
             onDismissRequest()
         }
         return result
