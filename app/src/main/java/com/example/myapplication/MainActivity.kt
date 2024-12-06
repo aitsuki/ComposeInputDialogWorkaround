@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.myapplication.ui.component.WorkaroundDialog
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
@@ -97,7 +96,6 @@ private fun HomeContent() {
         } else {
             Dialog(
                 onDismissRequest = { showInputDialog = false },
-                properties = DialogProperties(decorFitsSystemWindows = false)
             ) {
                 InputDialogContent(
                     modifier = Modifier.imePadding()
@@ -114,7 +112,6 @@ private fun HomeContent() {
         } else {
             Dialog(
                 onDismissRequest = { showListInputDialog = false },
-                properties = DialogProperties(decorFitsSystemWindows = false)
             ) {
                 ListInputDialogContent(
                     modifier = Modifier.imePadding()
